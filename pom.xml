@@ -42,8 +42,8 @@
     <properties>
         <changelist>999999-SNAPSHOT</changelist>
         <jenkins.version>2.361.4</jenkins.version>
-        <!-- TODO fix violations -->
-        <spotbugs.threshold>High</spotbugs.threshold>
+        <spotbugs.effort>Max</spotbugs.effort>
+        <spotbugs.threshold>Low</spotbugs.threshold>
     </properties>
     
     <licenses>
