@@ -51,7 +51,7 @@ public class FixResultBuilder extends Builder {
     public static final AbstractResult ABORTED = new BallResult(Result.ABORTED);
     public static final AbstractResult CYCLE = new CycleResult();
     
-    public static final AbstractResult[] RESULTS = {SUCCESS, UNSTABLE, FAILURE, ABORTED, CYCLE};
+    static final AbstractResult[] RESULTS = {SUCCESS, UNSTABLE, FAILURE, ABORTED, CYCLE};
 
     private transient Map<Integer, AbstractResult> resultsByBuildNumber = null;
     private final String defaultResultName;
