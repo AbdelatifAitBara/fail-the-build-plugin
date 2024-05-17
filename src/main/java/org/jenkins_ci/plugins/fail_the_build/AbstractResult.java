@@ -51,15 +51,19 @@ public abstract class AbstractResult {
 
     public boolean perform(AbstractBuild<?, ?> build, BuildListener listener) {
         final Result result = getResult(build, listener);
-        if (build.getResult() == null) {
+
+        Result existingResult = build.getResult();
+
+
+        if (existingResult == null) {
             listener.getLogger().println(Messages.console_settingResult(result.color.getDescription()));
             build.setResult(result);
-        } else if (build.getResult().isBetterThan(result)) {
+        } else if (existingResult.isBetterThan(result)) {
             listener.getLogger().println(Messages.console_settingResult(result.color.getDescription()));
-            build.setResult(result.combine(build.getResult()));
-        } else if (build.getResult().isWorseThan(result)) {
+            build.setResult(result.combine(existingResult));
+        } else if (existingResult.isWorseThan(result)) {
             listener.getLogger().println(Messages.console_resultWorse(
-                    build.getResult().color.getDescription(), result.color.getDescription()));
+                existingResult.color.getDescription(), result.color.getDescription()));
         } else {
             listener.getLogger().println(Messages.console_resultEqual(result.color.getDescription()));
         }

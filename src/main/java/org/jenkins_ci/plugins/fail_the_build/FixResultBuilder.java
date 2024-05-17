@@ -59,7 +59,8 @@ public class FixResultBuilder extends Builder {
     private final String unstable;
     private final String failure;
     private final String aborted;
-
+    private final Object lock = new Object();
+  
     @DataBoundConstructor
     public FixResultBuilder(final String defaultResultName, final String success, final String unstable, final String failure,
                             final String aborted) {
@@ -115,23 +116,45 @@ public class FixResultBuilder extends Builder {
         return Jenkins.get().getDescriptorByType(FixResultBuilderDescriptor.class);
     }
 
+
+
+
     @Override
     public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) {
+  
+      synchronized(lock) {
+  
         if (build == null) return false;
+        
         initResultsByBuildNumber();
+        
         AbstractResult result = resultsByBuildNumber.get(build.getNumber());
-        if (result == null)
-            result = getDefaultResult();
+        
+        if (result == null) {
+          result = getDefaultResult();  
+        }
+        
         return result.perform(build, listener);
+  
+      }
+  
     }
-
-    private synchronized void initResultsByBuildNumber() {
+  
+    private void initResultsByBuildNumber() {
+  
+      synchronized(lock) {
+  
         if (resultsByBuildNumber != null) return;
-        resultsByBuildNumber = new HashMap<Integer, AbstractResult>();
+        
+        resultsByBuildNumber = new HashMap<>();
+        
         parseAndStore(SUCCESS, success);
-        parseAndStore(UNSTABLE, unstable);
+        parseAndStore(UNSTABLE, unstable); 
         parseAndStore(FAILURE, failure);
         parseAndStore(ABORTED, aborted);
+  
+      }
+  
     }
 
     private void parseAndStore(final AbstractResult result, final String buildNumberList) {
